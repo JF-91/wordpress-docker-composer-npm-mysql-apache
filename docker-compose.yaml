@@ -1,0 +1,52 @@
+version: "3.8"
+networks:
+    john-wordpress-composer-npm:
+        driver: bridge
+
+services:
+    mysql:
+        image: mysql:8
+        container_name: john-wordpress-composer-npm-mysql
+        tty: true
+        ports:
+            - "3306:3306"
+        volumes:
+            - "./var/libclea/mysql/:/var/lib/mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: john
+            MYSQL_PASSWORD: secret
+        networks:
+            - john-wordpress-composer-npm
+
+    server:
+        build: 
+          context: .
+        container_name: john-wordpress-composer-npm-server
+        ports:
+            - "80:80"
+        volumes:
+            - "./var/www/html/:/var/www/html"
+        environment:
+            WORDPRESS_DB_USER: john
+            WORDPRESS_DB_PASSWORD: secret
+            WORDPRESS_DB_NAME: wordpress
+            WORDPRESS_DB_HOST: john-wordpress-composer-npm-mysql
+        depends_on:
+            - mysql
+        networks:
+            - john-wordpress-composer-npm
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: ds-john-wordpress-composer-npm-dbadmin
+        ports:
+            - "8000:80"
+        environment:
+            PMA_HOST: john-wordpress-composer-npm-mysql
+            MYSQL_ROOT_PASSWORD: secret
+        depends_on:
+            - mysql
+        networks:
+            - john-wordpress-composer-npm
