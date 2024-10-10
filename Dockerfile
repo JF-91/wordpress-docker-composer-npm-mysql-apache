@@ -18,7 +18,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | b
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copiar tu archivo php.ini al contenedor
-COPY php.ini /usr/local/etc/php/custom.ini
+COPY php.ini /usr/local/etc/php/conf.d/
 
 # Copiar tu código fuente al contenedor
 COPY . /var/www/html
